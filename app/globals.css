@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --paper: #f6f3ec;
+    --paper-2: #efebe1;
+    --paper-3: #fafafa;
+    --bone: #ffffff;
+    --ink: #131313;
+    --ink-soft: #555048;
+    --ink-mute: #8a8579;
+    --ink-faint: #b3aea3;
+    --rule: #e0dccf;
+    --rule-soft: #ece8dc;
+    --olive: #218c00;
+    --olive-tint: #e8f3e3;
+    --coral: #63fe13;
+    --coral-ink: #131313;
+    --live: #d6332a;
+
+    --font-display: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+    --max-w: 1280px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--coral);
+    color: var(--coral-ink);
+  }
+}
+
+@layer components {
+  .container-site {
+    @apply max-w-site mx-auto px-5 sm:px-6;
+  }
+
+  .editorial-eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-ink-soft;
+  }
+
+  .editorial-rule {
+    @apply border-t border-rule;
+  }
+
+  .link-olive {
+    @apply text-olive transition-colors hover:text-ink;
+  }
+
+  .live-dot {
+    @apply inline-block w-2 h-2 rounded-full bg-live;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+}
+
+/* Tipografi yükleme (Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap');
