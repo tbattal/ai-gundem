@@ -9,7 +9,7 @@ export function Footer() {
             AI<em>Gündem</em>
           </span>
           <p className="mt-3 text-sm text-ink-soft max-w-prose leading-relaxed">
-            Türkiye'nin yapay zekâ haber merkezi. LLM'ler, araçlar, araştırma, robotik, etik ve
+            Türkiye&apos;nin yapay zekâ haber merkezi. LLM&apos;ler, araçlar, araştırma, robotik, etik ve
             politika — her gün güncellenen, kaynak gösterilen haberler.
           </p>
         </div>

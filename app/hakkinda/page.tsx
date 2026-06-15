@@ -51,7 +51,7 @@ export default function HakkindaPage() {
         <div>
           <span className="editorial-eyebrow">Hakkında</span>
           <h1 className="mt-3 font-display text-display-lg sm:text-display-xl leading-[0.95] tracking-tight">
-            Türkiye'nin yapay zekâ
+            Türkiye&apos;nin yapay zekâ
             <br />
             <em className="text-olive">haber merkezi.</em>
           </h1>
