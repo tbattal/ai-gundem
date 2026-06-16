@@ -81,6 +81,21 @@ export async function getManset(): Promise<HaberListItem | null> {
   return (data ?? null) as HaberListItem | null;
 }
 
+export async function getMansetler(limit = 3): Promise<HaberListItem[]> {
+  const { data, error } = await supabase
+    .from('haberler')
+    .select(SELECT_LISTE)
+    .eq('one_cikan', true)
+    .order('yayin_tarihi', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('[getMansetler]', error.message);
+    return [];
+  }
+  return (data ?? []) as HaberListItem[];
+}
+
 export async function getTumSluglar(): Promise<{ slug: string }[]> {
   const { data, error } = await supabase
     .from('haberler')

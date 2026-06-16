@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
-    "db:seed:webtekno": "tsx scripts/seed-webtekno.ts"
+    "db:seed:webtekno": "tsx scripts/seed-webtekno.ts",
+    "db:seed:50": "tsx scripts/seed-50.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
