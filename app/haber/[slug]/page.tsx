@@ -9,7 +9,7 @@ import { HaberKarti } from '@/components/haber/HaberKarti';
 import { getHaberBySlug, getHaberler, getTumSluglar } from '@/lib/supabase';
 import { kategoriIdToSlug, tarihFormat } from '@/lib/utils';
 
-export const revalidate = 3600; // 1 saat
+export const revalidate = 60; // 60 saniye (yedek; /api/revalidate ile anında da invalidate olur)
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
