@@ -278,6 +278,41 @@ async function main() {
   console.log(`\n✅ Güncellendi: ${ok}`);
   console.log(`❌ Başarısız: ${fail}`);
   if (skipped > 0) console.log(`⏭️  Atlandı: ${skipped}`);
+
+  // Güncelleme başarılıysa otomatik olarak tüm sayfaları revalidate et
+  if (ok > 0) {
+    console.log(`\n🔄 On-demand revalidation tetikleniyor...`);
+    await triggerRevalidate();
+  }
+}
+
+async function triggerRevalidate(): Promise<void> {
+  const secret = process.env.REVALIDATE_SECRET;
+  const siteUrl =
+    process.env.SITE_URL
+    ?? process.env.NEXT_PUBLIC_SITE_URL
+    ?? 'https://ai-gundem.netlify.app';
+  if (!secret) {
+    console.log('   ⚠️  REVALIDATE_SECRET yok, revalidate atlandı (lokal çalışma)');
+    return;
+  }
+  try {
+    const url = `${siteUrl.replace(/\/$/, '')}/api/revalidate?secret=${encodeURIComponent(secret)}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ all: true }),
+    });
+    const text = await res.text();
+    if (res.ok) {
+      console.log(`   ✓ Revalidate tetiklendi: HTTP ${res.status}`);
+      console.log(`   ${text}`);
+    } else {
+      console.log(`   ⚠️  Revalidate HTTP ${res.status}: ${text}`);
+    }
+  } catch (e) {
+    console.log(`   ⚠️  Revalidate çağrısı başarısız: ${(e as Error).message}`);
+  }
 }
 
 main().catch((e) => {

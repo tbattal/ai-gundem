@@ -262,7 +262,67 @@ LIMIT  1;
 
 ---
 
-## 11. İlgili Dosyalar
+## 11. On-Demand Revalidation (ISR)
+
+DB güncellendikten sonra Netlify ISR cache'ini invalidate etmek için
+`/api/revalidate` endpoint'i kullanılır. Sayfa `revalidate` süreleri dolmadan
+değişikliklerin yansımasını sağlar.
+
+### Akış
+```
+DB güncelleme scripti (fix-gorsel-pexels.ts vb.)
+  └─→ fetch POST https://site/api/revalidate?secret=...
+        └─→ Next.js revalidatePath() / revalidateTag() çağrısı
+              └─→ Sonraki istek fresh render
+```
+
+### Endpoint
+
+`app/api/revalidate/route.ts` (POST)
+
+| Parametre     | Tip       | Açıklama |
+|---------------|-----------|----------|
+| `?secret=`    | query     | `REVALIDATE_SECRET` env ile karşılaştırılır |
+| `body.all`    | bool      | Tüm ana yüzeyler (`/`, `/arsiv`, tüm `/haber/[slug]`, tüm `/kategori/[kategori]`) |
+| `body.paths`  | string[]  | Belirli yollar (örn. `["/", "/haber/some-slug"]`) |
+| `body.tags`   | string[]  | Next.js cache tag (ileride kullanım için) |
+
+401 → secret yanlış; 503 → `REVALIDATE_SECRET` env tanımlı değil.
+
+### Script
+
+```bash
+# Tüm ana yüzeyleri revalidate et (DB değişikliği sonrası default)
+npx tsx scripts/revalidate.ts
+
+# Sadece belirli yolları revalidate et
+npx tsx scripts/revalidate.ts --paths=/,/arsiv
+
+# Veritabanındaki tüm haberleri/kategorileri revalidate et
+npx tsx scripts/revalidate.ts --all-slugs
+
+# Network çağrısı atma, sadece body'yi gör
+npx tsx scripts/revalidate.ts --dry-run
+```
+
+### Otomatik tetikleme
+
+`fix-gorsel-pexels.ts` ve `fix-gorsel-picsum.ts` scriptleri başarılı güncelleme
+sonrası otomatik olarak `triggerRevalidate()` çağırır (yukarıdaki `{all:true}`
+gövdesiyle).
+
+### Production kurulumu
+
+Netlify'da `REVALIDATE_SECRET` env değişkeni tanımlı OLMALIDIR:
+1. https://app.netlify.com → site → **Site settings** → **Environment variables**
+2. **Add a variable** → `REVALIDATE_SECRET` = `<32-byte hex>` (örn. `openssl rand -hex 32`)
+3. Save → bir sonraki deploy'da aktif olur
+
+Yoksa endpoint 503 döner.
+
+---
+
+## 12. İlgili Dosyalar
 
 - `supabase/migrations/001_initial_schema.sql` — Tablo DDL
 - `supabase/seed.sql` — Örnek veri (Studio'dan çalıştırılabilir)
@@ -272,4 +332,9 @@ LIMIT  1;
 - `scripts/seed.ts` — 12 örnek haber
 - `scripts/seed-webtekno.ts` — 52 Webtekno haberi (eskileri siler)
 - `scripts/seed-50.ts` — 50 Webtekno haberi (CSV tabanlı, test insert'li)
+- `scripts/seed-tr-yapay-zeka.ts` — 50 Türkçe AI haberi (senkretik içerik)
+- `scripts/fix-gorsel-picsum.ts` — Görselleri Picsum'a günceller
+- `scripts/fix-gorsel-pexels.ts` — Görselleri Pexels'ten alakalı fotoğrafla günceller
+- `scripts/revalidate.ts` — On-demand ISR revalidation tetikleyici
 - `scripts/migrate.ts` — `pg` üzerinden migration çalıştırıcı
+- `app/api/revalidate/route.ts` — On-demand revalidation HTTP endpoint
