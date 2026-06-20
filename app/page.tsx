@@ -5,7 +5,7 @@ import { KATEGORI_LISTESI } from '@/lib/kategoriler';
 import { getHaberler, getMansetler } from '@/lib/supabase';
 import { kategoriIdToSlug } from '@/lib/utils';
 
-export const revalidate = 60; // 60 saniye (yedek; /api/revalidate ile anında da invalidate olur)
+export const revalidate = 0; // sıfır — her istekte taze veri (DB değişiklikleri anında yansır)
 
 export default async function AnaSayfa() {
   const [mansetler, haberler] = await Promise.all([

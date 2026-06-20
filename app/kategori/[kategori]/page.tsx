@@ -6,7 +6,7 @@ import { getHaberler } from '@/lib/supabase';
 import { kategoriSlugToId } from '@/lib/utils';
 import type { Kategori } from '@/types/haber';
 
-export const revalidate = 60; // 60 saniye (yedek; /api/revalidate ile anında da invalidate olur)
+export const revalidate = 0; // sıfır — her istekte taze veri (DB değişiklikleri anında yansır)
 
 interface Props {
   params: { kategori: string };
