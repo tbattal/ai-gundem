@@ -123,6 +123,41 @@ function htmlTemizle(text: string): string {
   return text.replace(/&[a-z#0-9]+;/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function icerikHazirla(text: string): string {
+  if (!text) return '';
+  const temiz = text
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&[a-z#0-9]+;/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  if (!temiz) return '';
+  return paragraflaraBol(temiz);
+}
+
+function paragraflaraBol(text: string, hedefUzunluk = 400): string {
+  const cumleler = text.split(/(?<=[.!?])\s+(?=[A-ZÇĞİÖŞÜa-zşığüöç])/);
+  const paragraflar: string[] = [];
+  let tampon = '';
+  for (const cumle of cumleler) {
+    const t = cumle.trim();
+    if (!t) continue;
+    const aday = tampon ? tampon + ' ' + t : t;
+    if (tampon && aday.length > hedefUzunluk) {
+      paragraflar.push(tampon);
+      tampon = t;
+    } else {
+      tampon = aday;
+    }
+  }
+  if (tampon) paragraflar.push(tampon);
+  return paragraflar.map((p) => `<p>${p}</p>`).join('\n');
+}
+
 function gorselGecerli(url: string): boolean {
   if (!url) return false;
   if (!/^https?:\/\//i.test(url)) return false;
@@ -146,7 +181,7 @@ async function main() {
     const { yazar } = parseAuthor(r.author || '');
     const baslik = htmlTemizle(r.title || '');
     const ozet = htmlTemizle(r.description || '');
-    const icerik = htmlTemizle(r.content || '');
+    const icerik = icerikHazirla(r.content || '');
     return {
       slug: slugifyTr(baslik) + '-' + r.id,
       baslik,
