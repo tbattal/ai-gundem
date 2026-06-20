@@ -27,6 +27,9 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    # Durable Cache bypass: HTML sayfaları her istekte origin'den (DB taze)
+    # _next/static/* için tanımlı immutable header yukarıda, override edilmez
+    Cache-Control = "no-store, no-cache, must-revalidate"
 
 # Güvenlik: hassas dosyaların yanlışlıkla deploy edilmesini engelle
 [[headers]]
