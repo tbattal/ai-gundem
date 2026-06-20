@@ -28,8 +28,9 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     # Durable Cache bypass: HTML sayfaları her istekte origin'den (DB taze)
+    # private → sadece tarayıcı cacheleyebilir, CDN/edge cacheleyemez
     # _next/static/* için tanımlı immutable header yukarıda, override edilmez
-    Cache-Control = "no-store, no-cache, must-revalidate"
+    Cache-Control = "private, no-store, no-cache, must-revalidate, max-age=0"
 
 # Güvenlik: hassas dosyaların yanlışlıkla deploy edilmesini engelle
 [[headers]]
